@@ -11,12 +11,15 @@ import org.jdesktop.application.SingleFrameApplication;
  * The main class of the application.
  */
 public class PokerApp extends SingleFrameApplication {
-
+    public User loggedUser = null;
+    public PokerView pokerView;
+    
     /**
      * At startup create and show the main frame of the application.
      */
     @Override protected void startup() {
-        show(new PokerView(this));
+        pokerView = new PokerView(this);
+        show(pokerView);
     }
 
     /**

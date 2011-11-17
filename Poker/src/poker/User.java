@@ -4,12 +4,16 @@
  */
 package poker;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 /**
  *
  * @author siesiek
  */
 public class User {
-    private String username;
+    private String name;
     private String login;
     private String password;
     private int id;
@@ -24,12 +28,12 @@ public class User {
         this.password = password;
     }
     
-    public void setUsername(String username){
-        this.username = username;
+    public void setName(String username){
+        this.name = username;
     }
     
-    public String getUsername(){
-        return this.username;
+    public String getName(){
+        return this.name;
     }
     
     public void setLogin(String login){
@@ -65,8 +69,16 @@ public class User {
      * Metoda logowania uzytkownika
      * @todo wszystko co potrzebne do logowania i aktualizacja danych w bazie
      */
-    public void loginUser(){
-        
+    public boolean loginUser() throws SQLException{
+        Statement stat = Database.getConnection().createStatement();
+        ResultSet result = stat.executeQuery("SELECT * FROM users WHERE login='"+this.login+"' AND deleted=0");
+        if(result.next() && result.getString("password").equals(this.password)){
+            this.name = result.getString("name");
+            return true;
+        }
+        else{
+            return false;
+        }
     }
     
     /**
