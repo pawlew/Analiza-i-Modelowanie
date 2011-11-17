@@ -326,8 +326,9 @@ public class PokerView extends FrameView {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         if(loginDialog == null){
-            loginDialog = new LoginDialog(this.getFrame(), true);
+            loginDialog = new LoginDialog(PokerApp.getApplication().getMainFrame(), true);
         }
+        loginDialog.setLocationRelativeTo(PokerApp.getApplication().getMainFrame());
         loginDialog.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
 
