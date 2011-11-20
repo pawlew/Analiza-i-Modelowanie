@@ -28,6 +28,12 @@ public class User {
         this.password = password;
     }
     
+    public User(String name, String login, String password){
+        this.name = name;
+        this.login = login;
+        this.password = password;
+    }
+    
     public void setName(String username){
         this.name = username;
     }
@@ -83,10 +89,12 @@ public class User {
     
     /**
      * Metoda rejestracji uzytkownika
-     * @todo wszystko co potrzebne do rejestracji i aktualizacja danych w bazie
+     * @todo warunek do execute
      */
-    public void registerUser(){
-        
+    public boolean registerUser() throws SQLException{
+       Statement stat = Database.getConnection().createStatement();
+       boolean result = stat.execute("INSERT INTO users (name, login, password, deleted) VALUES ('"+this.name+"','"+this.login+"','"+this.password+"','0')");
+       return true;     
     }
     
     /**

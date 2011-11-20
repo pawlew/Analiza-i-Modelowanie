@@ -104,7 +104,7 @@ public class PokerView extends FrameView {
         startPanel = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
         loggedPanel = new javax.swing.JPanel();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
@@ -139,8 +139,13 @@ public class PokerView extends FrameView {
             }
         });
 
-        jButton3.setText(resourceMap.getString("jButton3.text")); // NOI18N
-        jButton3.setName("jButton3"); // NOI18N
+        jButton8.setText(resourceMap.getString("jButton8.text")); // NOI18N
+        jButton8.setName("jButton8"); // NOI18N
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout startPanelLayout = new javax.swing.GroupLayout(startPanel);
         startPanel.setLayout(startPanelLayout);
@@ -149,13 +154,13 @@ public class PokerView extends FrameView {
             .addGroup(startPanelLayout.createSequentialGroup()
                 .addGroup(startPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(startPanelLayout.createSequentialGroup()
+                        .addGap(157, 157, 157)
+                        .addComponent(jButton2))
+                    .addGroup(startPanelLayout.createSequentialGroup()
                         .addGap(149, 149, 149)
                         .addGroup(startPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton3)
-                            .addComponent(jButton1)))
-                    .addGroup(startPanelLayout.createSequentialGroup()
-                        .addGap(157, 157, 157)
-                        .addComponent(jButton2)))
+                            .addComponent(jButton8)
+                            .addComponent(jButton1))))
                 .addContainerGap(150, Short.MAX_VALUE))
         );
         startPanelLayout.setVerticalGroup(
@@ -163,9 +168,9 @@ public class PokerView extends FrameView {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, startPanelLayout.createSequentialGroup()
                 .addContainerGap(55, Short.MAX_VALUE)
                 .addComponent(jButton2)
-                .addGap(29, 29, 29)
-                .addComponent(jButton3)
-                .addGap(27, 27, 27)
+                .addGap(28, 28, 28)
+                .addComponent(jButton8)
+                .addGap(28, 28, 28)
                 .addComponent(jButton1)
                 .addGap(74, 74, 74))
         );
@@ -252,9 +257,9 @@ public class PokerView extends FrameView {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(mainPanelLayout.createSequentialGroup()
-                    .addGap(0, 5, Short.MAX_VALUE)
+                    .addGap(0, 10, Short.MAX_VALUE)
                     .addComponent(loggedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 6, Short.MAX_VALUE)))
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -338,14 +343,22 @@ public class PokerView extends FrameView {
         loggedPanel.setVisible(false);
     }//GEN-LAST:event_jButton4ActionPerformed
 
+private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+if(registerDialog == null){
+            registerDialog = new RegisterDialog(PokerApp.getApplication().getMainFrame(), true);
+        }
+        registerDialog.setLocationRelativeTo(PokerApp.getApplication().getMainFrame());
+        registerDialog.setVisible(true);
+}//GEN-LAST:event_jButton8ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
     public javax.swing.JPanel loggedPanel;
     public javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
@@ -365,4 +378,5 @@ public class PokerView extends FrameView {
 
     private JDialog aboutBox;
     private LoginDialog loginDialog;
+    private RegisterDialog registerDialog;
 }
