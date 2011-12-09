@@ -10,6 +10,8 @@
  */
 package poker;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -176,15 +178,21 @@ public class RegisterDialog extends javax.swing.JDialog {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
             User user = new User(nameField.getText(), loginField.getText(), passwordField.getText());
-            if(user.registerUser()){
-                PokerApp.getApplication().loggedUser = user;
-                PokerApp.getApplication().pokerView.loggedPanel.setVisible(true);
-                PokerApp.getApplication().pokerView.startPanel.setVisible(false);
-//               PokerApp.getApplication().pokerView.mainPanel.setVisible(false);
-                this.setVisible(false);
-            }
-            else{
-                System.out.println("Problem z rejestracja");
+            try {
+                if(user.registerUser()){
+                    PokerApp.getApplication().loggedUser = user;
+                    PokerApp.getApplication().pokerView.loggedPanel.setVisible(true);
+                    PokerApp.getApplication().pokerView.startPanel.setVisible(false);
+    //               PokerApp.getApplication().pokerView.mainPanel.setVisible(false);
+                    this.setVisible(false);
+                }
+                else{
+                    System.out.println("Problem z rejestracja");
+                }
+            } catch (NoSuchAlgorithmException ex) {
+                Logger.getLogger(RegisterDialog.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(RegisterDialog.class.getName()).log(Level.SEVERE, null, ex);
             }
         } catch (SQLException ex) {
             Logger.getLogger(RegisterDialog.class.getName()).log(Level.SEVERE, null, ex);

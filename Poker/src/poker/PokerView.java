@@ -194,6 +194,11 @@ public class PokerView extends FrameView {
 
         jButton5.setText(resourceMap.getString("jButton5.text")); // NOI18N
         jButton5.setName("jButton5"); // NOI18N
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jButton6.setText(resourceMap.getString("jButton6.text")); // NOI18N
         jButton6.setName("jButton6"); // NOI18N
@@ -351,6 +356,14 @@ if(registerDialog == null){
         registerDialog.setVisible(true);
 }//GEN-LAST:event_jButton8ActionPerformed
 
+private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+if(passChangeDialog == null){
+            passChangeDialog = new PassChangeDialog(PokerApp.getApplication().getMainFrame(), true);
+        }
+        passChangeDialog.setLocationRelativeTo(PokerApp.getApplication().getMainFrame());
+        passChangeDialog.setVisible(true);// TODO add your handling code here:                        
+}//GEN-LAST:event_jButton5ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -379,4 +392,5 @@ if(registerDialog == null){
     private JDialog aboutBox;
     private LoginDialog loginDialog;
     private RegisterDialog registerDialog;
+    private PassChangeDialog passChangeDialog;
 }
