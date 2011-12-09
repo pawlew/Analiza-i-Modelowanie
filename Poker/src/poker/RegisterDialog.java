@@ -10,6 +10,8 @@
  */
 package poker;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,6 +47,8 @@ public class RegisterDialog extends javax.swing.JDialog {
         jButton2 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         nameField = new javax.swing.JTextField();
+        passwordField2 = new javax.swing.JPasswordField();
+        jLabel4 = new javax.swing.JLabel();
 
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(poker.PokerApp.class).getContext().getResourceMap(RegisterDialog.class);
         setTitle(resourceMap.getString("Form.title")); // NOI18N
@@ -99,25 +103,40 @@ public class RegisterDialog extends javax.swing.JDialog {
             }
         });
 
+        passwordField2.setName("passwordField2"); // NOI18N
+        passwordField2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                passwordField2KeyPressed(evt);
+            }
+        });
+
+        jLabel4.setText(resourceMap.getString("jLabel4.text")); // NOI18N
+        jLabel4.setName("jLabel4"); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(passwordField2)
+                            .addComponent(passwordField, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(loginField, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(nameField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(50, 50, 50)
                         .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 127, Short.MAX_VALUE)
-                        .addComponent(jButton2))
-                    .addComponent(passwordField, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
-                    .addComponent(loginField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
-                    .addComponent(nameField, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 135, Short.MAX_VALUE)
+                        .addComponent(jButton2)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -135,11 +154,15 @@ public class RegisterDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(27, 27, 27)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(passwordField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
                     .addComponent(jButton1))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -149,6 +172,7 @@ public class RegisterDialog extends javax.swing.JDialog {
         this.nameField.setText("");
         this.loginField.setText("");
         this.passwordField.setText("");
+        this.passwordField2.setText("");
         this.jButton1.setEnabled(false);
         this.setVisible(false);
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -156,15 +180,21 @@ public class RegisterDialog extends javax.swing.JDialog {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
             User user = new User(nameField.getText(), loginField.getText(), passwordField.getText());
-            if(user.registerUser()){
-                PokerApp.getApplication().loggedUser = user;
-                PokerApp.getApplication().pokerView.loggedPanel.setVisible(true);
-                PokerApp.getApplication().pokerView.startPanel.setVisible(false);
-//               PokerApp.getApplication().pokerView.mainPanel.setVisible(false);
-                this.setVisible(false);
-            }
-            else{
-                System.out.println("Problem z rejestracja");
+            try {
+                if(user.registerUser()){
+                    PokerApp.getApplication().loggedUser = user;
+                    PokerApp.getApplication().pokerView.loggedPanel.setVisible(true);
+                    PokerApp.getApplication().pokerView.startPanel.setVisible(false);
+    //               PokerApp.getApplication().pokerView.mainPanel.setVisible(false);
+                    this.setVisible(false);
+                }
+                else{
+                    System.out.println("Problem z rejestracja");
+                }
+            } catch (NoSuchAlgorithmException ex) {
+                Logger.getLogger(RegisterDialog.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(RegisterDialog.class.getName()).log(Level.SEVERE, null, ex);
             }
         } catch (SQLException ex) {
             Logger.getLogger(RegisterDialog.class.getName()).log(Level.SEVERE, null, ex);
@@ -189,6 +219,10 @@ if(!loginField.getText().isEmpty() && !passwordField.getText().isEmpty() && !nam
         }
 }//GEN-LAST:event_nameFieldKeyPressed
 
+private void passwordField2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passwordField2KeyPressed
+
+}//GEN-LAST:event_passwordField2KeyPressed
+
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -196,8 +230,10 @@ if(!loginField.getText().isEmpty() && !passwordField.getText().isEmpty() && !nam
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JTextField loginField;
     private javax.swing.JTextField nameField;
     private javax.swing.JPasswordField passwordField;
+    private javax.swing.JPasswordField passwordField2;
     // End of variables declaration//GEN-END:variables
 }

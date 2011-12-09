@@ -4,8 +4,6 @@
  */
 package poker;
 
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -93,11 +91,11 @@ public class User {
      * Metoda rejestracji uzytkownika
      * @todo warunek do execute
      */
-    public boolean registerUser() throws SQLException, NoSuchAlgorithmException, UnsupportedEncodingException{
+    public boolean registerUser() throws SQLException{
        Statement stat = Database.getConnection().createStatement();
-       String sha1_pass = Encode.SHA1(this.login); 
-       boolean result = stat.execute("INSERT INTO users (name, login, password, deleted) VALUES ('"+this.name+"','"+this.login+"','"+sha1_pass+"','0')");
-       return true;            
+       boolean result = stat.execute("INSERT INTO users (name, login, password, deleted) VALUES ('"+this.name+"','"+this.login+"','"+this.password+"','0')");
+       return true;
+       
     }
     
     /**
