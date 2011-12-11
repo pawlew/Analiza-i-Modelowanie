@@ -20,22 +20,20 @@ public class User {
     private String password;
     private int id;
     private int deleted;
-    private String masterpassword = "Music";
     
     public User(int id){
         this.id = id;
     }
     
-    public User(String login, String password) throws NoSuchAlgorithmException, UnsupportedEncodingException, Exception{
+    public User(String login, String password) throws NoSuchAlgorithmException, UnsupportedEncodingException{
         this.login = login;
-        this.password = Crypto.encrypt(masterpassword, password);
-
+        this.password = Encode.SHA1(password);
     }
     
-    public User(String name, String login, String password) throws NoSuchAlgorithmException, UnsupportedEncodingException, Exception{
+    public User(String name, String login, String password) throws NoSuchAlgorithmException, UnsupportedEncodingException{
         this.name = name;
         this.login = login;
-        this.password = Crypto.encrypt(masterpassword, password);
+        this.password = Encode.SHA1(password);
     }
     
     public void setName(String username){

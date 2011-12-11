@@ -29,7 +29,6 @@ public class RegisterDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.jLabel5.setVisible(false);
-        this.jLabel6.setVisible(false);
     }
 
     /** This method is called from within the constructor to
@@ -202,39 +201,33 @@ public class RegisterDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    User user = null;
-    User userCheck = null;
-    if(!this.passwordField.getText().equals(this.passwordField2.getText())){
+    if (!this.passwordField.getText().equals(this.passwordField2.getText())){
+        this.jLabel5.setVisible(true);
+       }
+    else if(!this.passwordField.getText().equals(this.passwordField2.getText())){
         this.jLabel5.setVisible(true);
        }
     else {
         try {
-                    try {
-                        user = new User(nameField.getText(), loginField.getText(), passwordField.getText());
-                    } catch (Exception ex) {
-                        Logger.getLogger(RegisterDialog.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    try {
-                        userCheck = new User(nameField.getText(), loginField.getText(), passwordField.getText());
-                    } catch (Exception ex) {
-                        Logger.getLogger(RegisterDialog.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-            
+            User user = null;
             try {
-                if (userCheck.checkUser()){
-                    this.jLabel6.setVisible(true);
-                }
-                else if(user.registerUser()){
+                user = new User(nameField.getText(), loginField.getText(), passwordField.getText());
+            } catch (NoSuchAlgorithmException ex) {
+                Logger.getLogger(RegisterDialog.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(RegisterDialog.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                if(user.registerUser()){
                     PokerApp.getApplication().loggedUser = user;
                     PokerApp.getApplication().pokerView.loggedPanel.setVisible(true);
                     PokerApp.getApplication().pokerView.startPanel.setVisible(false);
     //               PokerApp.getApplication().pokerView.mainPanel.setVisible(false);
                     this.setVisible(false);
                 }
-                    else {
+                else{
                     System.out.println("Problem z rejestracja");
                 }
-            
             } catch (NoSuchAlgorithmException ex) {
                 Logger.getLogger(RegisterDialog.class.getName()).log(Level.SEVERE, null, ex);
             } catch (UnsupportedEncodingException ex) {
