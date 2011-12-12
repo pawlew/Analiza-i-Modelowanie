@@ -2,80 +2,82 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package poker;
 
 import java.awt.Window;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import junit.framework.TestCase;
 
 /**
  *
  * @author dyrek
  */
-public class PokerAppTest {
+public class PokerAppTest extends TestCase {
 
-    public PokerAppTest() {
+    public PokerAppTest(String testName) {
+        super(testName);
     }
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
+    @Override
+    protected void setUp() throws Exception {
+
+        super.setUp();
     }
 
-    @AfterClass
-    public static void tearDownClass() throws Exception {
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
     }
 
     /**
      * Test of startup method, of class PokerApp.
      */
-    @Test
     public void testStartup() {
         System.out.println("startup");
         PokerApp instance = new PokerApp();
-        instance.startup();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        try {
+            instance.startup();
+        } catch (Exception e) {
+            fail("The test fails");
+        }
+
     }
 
     /**
      * Test of configureWindow method, of class PokerApp.
      */
-    @Test
     public void testConfigureWindow() {
         System.out.println("configureWindow");
         Window root = null;
         PokerApp instance = new PokerApp();
-        instance.configureWindow(root);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
+        try {
+            instance.configureWindow(root);
+        } catch (Exception e) {
+            fail("The test fails");
+        }
+
     }
 
     /**
      * Test of getApplication method, of class PokerApp.
      */
-    @Test
     public void testGetApplication() {
         System.out.println("getApplication");
-        PokerApp expResult = null;
         PokerApp result = PokerApp.getApplication();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertNotNull(result);
+
     }
 
     /**
      * Test of main method, of class PokerApp.
      */
-    @Test
     public void testMain() {
         System.out.println("main");
         String[] args = null;
-        PokerApp.main(args);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        try {
+            PokerApp.main(args);
+        } catch (Exception e) {
+            fail("The test fails");
+        }
     }
-
 }
