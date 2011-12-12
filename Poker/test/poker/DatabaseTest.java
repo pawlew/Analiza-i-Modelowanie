@@ -44,9 +44,11 @@ public class DatabaseTest {
     @Test
     public void testConnect() throws Exception {
         System.out.println("connect");
-        Database.connect();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        try {
+             Database.connect();
+        } catch (Exception e) {
+            fail("The test fails");
+        }
     }
 
     /**
@@ -55,11 +57,8 @@ public class DatabaseTest {
     @Test
     public void testGetConnection() {
         System.out.println("getConnection");
-        Connection expResult = null;
         Connection result = Database.getConnection();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertNotNull(result);
     }
 
 }

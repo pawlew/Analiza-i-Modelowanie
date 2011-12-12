@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package poker;
 
 import org.junit.After;
@@ -38,9 +37,21 @@ public class LoginDialogTest {
     }
 
     @Test
-    public void testSomeMethod() {
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+    public void testLoginDialog() {
+        PokerApp appInstance = new PokerApp();
+        java.awt.Frame a = new java.awt.Frame();
+        try {
+            LoginDialog instance = new LoginDialog(a, false);
+        } catch (Exception e) {
+            fail("The test fails");
+        }
+        try {
+            LoginDialog instance = new LoginDialog(a, true);
+        } catch (Exception e) {
+            fail("The test fails");
+        }
 
+
+
+    }
 }
