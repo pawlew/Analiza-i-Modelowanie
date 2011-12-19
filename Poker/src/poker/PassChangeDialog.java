@@ -10,12 +10,15 @@
  */
 package poker;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author User
  */
-public class PassChangeDialog extends javax.swing.JDialog {
-
+public class PassChangeDialog extends javax.swing.JDialog { 
+    
     /** Creates new form PassChangeDialog */
     public PassChangeDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -177,22 +180,26 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_jButton2ActionPerformed
 
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (!PokerApp.getApplication().loggedUser.getPassword().toString().equals(this.jPasswordField1.getText())){
-            this.jLabel4.setVisible(true);
-            this.jLabel5.setVisible(false);
-        } 
-        else {
-            if (!this.jPasswordField2.getText().equals(this.jPasswordField4.getText())){
-                this.jLabel5.setVisible(true);
-                this.jLabel4.setVisible(false);
-                    }
-            else{
-                PokerApp.getApplication().loggedUser.setPassword(this.jPasswordField4.getText());
-                this.setVisible(false); 
-//save user
+        try {
+            if (!PokerApp.getApplication().loggedUser.getPassword().toString().equals(Crypto.encrypt("Music" ,this.jPasswordField1.getText()))){
+                this.jLabel4.setVisible(true);
+                this.jLabel5.setVisible(false);
+            } 
+            else {
+                if (!this.jPasswordField2.getText().equals(this.jPasswordField4.getText())){
+                    this.jLabel5.setVisible(true);
+                    this.jLabel4.setVisible(false);
+                        }
+                else{
+                    PokerApp.getApplication().loggedUser.setPassword(Crypto.encrypt("Music" ,this.jPasswordField4.getText()));
+                    this.setVisible(false); 
+    //save user
+                }
             }
+                // TODO add your handling code here:
+        } catch (Exception ex) {
+            Logger.getLogger(PassChangeDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
-            // TODO add your handling code here:
 }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

@@ -17,7 +17,7 @@ public class Database {
 
     private static Connection connection;
     private static String username = "root";
-    private static String password = "13luty";
+    private static String password = "";
     private static String url = "jdbc:mysql://localhost:3306/poker";
 
     public static void connect() throws SQLException, IOException {

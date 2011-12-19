@@ -24,12 +24,11 @@ import poker.User;
  */
 public class RegisterDialog extends javax.swing.JDialog {
 
-    /** Creates new form RegisterDialog */
+    /** Creates new form LoginDialog */
     public RegisterDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         this.jLabel5.setVisible(false);
-        this.jLabel6.setVisible(false);
     }
 
     /** This method is called from within the constructor to
@@ -52,7 +51,6 @@ public class RegisterDialog extends javax.swing.JDialog {
         passwordField2 = new javax.swing.JPasswordField();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
 
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(poker.PokerApp.class).getContext().getResourceMap(RegisterDialog.class);
         setTitle(resourceMap.getString("Form.title")); // NOI18N
@@ -121,10 +119,6 @@ public class RegisterDialog extends javax.swing.JDialog {
         jLabel5.setText(resourceMap.getString("jLabel5.text")); // NOI18N
         jLabel5.setName("jLabel5"); // NOI18N
 
-        jLabel6.setForeground(resourceMap.getColor("jLabel6.foreground")); // NOI18N
-        jLabel6.setText(resourceMap.getString("jLabel6.text")); // NOI18N
-        jLabel6.setName("jLabel6"); // NOI18N
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -143,16 +137,14 @@ public class RegisterDialog extends javax.swing.JDialog {
                             .addComponent(passwordField2)
                             .addComponent(passwordField, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
                             .addComponent(nameField)
-                            .addComponent(loginField))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel6))
+                            .addComponent(loginField)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(50, 50, 50)
                         .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 172, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 158, Short.MAX_VALUE)
                         .addComponent(jButton2))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(257, Short.MAX_VALUE)
+                        .addContainerGap(243, Short.MAX_VALUE)
                         .addComponent(jLabel5)))
                 .addContainerGap())
         );
@@ -168,8 +160,7 @@ public class RegisterDialog extends javax.swing.JDialog {
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(loginField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel6))
+                            .addComponent(jLabel1))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -202,39 +193,26 @@ public class RegisterDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    User user = null;
-    User userCheck = null;
-    if(!this.passwordField.getText().equals(this.passwordField2.getText())){
-        this.jLabel5.setVisible(true);
-       }
-    else {
         try {
-                    try {
-                        user = new User(nameField.getText(), loginField.getText(), passwordField.getText());
-                    } catch (Exception ex) {
-                        Logger.getLogger(RegisterDialog.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    try {
-                        userCheck = new User(nameField.getText(), loginField.getText(), passwordField.getText());
-                    } catch (Exception ex) {
-                        Logger.getLogger(RegisterDialog.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-            
+            User user = null;
             try {
-                if (userCheck.checkUser()){
-                    this.jLabel6.setVisible(true);
-                }
-                else if(user.registerUser()){
+                user = new User(nameField.getText(), loginField.getText(), passwordField.getText());
+            } catch (NoSuchAlgorithmException ex) {
+                Logger.getLogger(RegisterDialog.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(RegisterDialog.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                if(user.registerUser()){
                     PokerApp.getApplication().loggedUser = user;
                     PokerApp.getApplication().pokerView.loggedPanel.setVisible(true);
                     PokerApp.getApplication().pokerView.startPanel.setVisible(false);
     //               PokerApp.getApplication().pokerView.mainPanel.setVisible(false);
                     this.setVisible(false);
                 }
-                    else {
+                else{
                     System.out.println("Problem z rejestracja");
                 }
-            
             } catch (NoSuchAlgorithmException ex) {
                 Logger.getLogger(RegisterDialog.class.getName()).log(Level.SEVERE, null, ex);
             } catch (UnsupportedEncodingException ex) {
@@ -243,31 +221,40 @@ public class RegisterDialog extends javax.swing.JDialog {
         } catch (SQLException ex) {
             Logger.getLogger(RegisterDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
-                                    }           
+        
+        
+            if (!this.jPasswordField.getText().equals(this.jPasswordField2.getText())){
+                this.jLabel5.setVisible(true);
+                this.jLabel4.setVisible(false);
+                    }
+            else{
+                PokerApp.getApplication().loggedUser.setPassword(this.jPasswordField4.getText());
+                this.setVisible(false); 
+//save user
+            }
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void passwordFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passwordFieldKeyPressed
-        if(!loginField.getText().isEmpty() && !passwordField.getText().isEmpty() && !passwordField2.getText().isEmpty()){
+        if(!loginField.getText().isEmpty() && !passwordField.getText().isEmpty()){
             jButton1.setEnabled(true);
         }
     }//GEN-LAST:event_passwordFieldKeyPressed
 
     private void loginFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_loginFieldKeyPressed
-        if(!loginField.getText().isEmpty() && !passwordField.getText().isEmpty() && !nameField.getText().isEmpty() && !passwordField2.getText().isEmpty()){
+        if(!loginField.getText().isEmpty() && !passwordField.getText().isEmpty() && !nameField.getText().isEmpty()){
             jButton1.setEnabled(true);
         }
     }//GEN-LAST:event_loginFieldKeyPressed
 
 private void nameFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameFieldKeyPressed
-if(!loginField.getText().isEmpty() && !passwordField.getText().isEmpty() && !nameField.getText().isEmpty() ){
+if(!loginField.getText().isEmpty() && !passwordField.getText().isEmpty() && !nameField.getText().isEmpty()){
             jButton1.setEnabled(true);
         }
 }//GEN-LAST:event_nameFieldKeyPressed
 
 private void passwordField2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passwordField2KeyPressed
-if(!loginField.getText().isEmpty() && !passwordField.getText().isEmpty() && !nameField.getText().isEmpty() ){
-            jButton1.setEnabled(true);
-        }
+
 }//GEN-LAST:event_passwordField2KeyPressed
 
     
@@ -279,7 +266,6 @@ if(!loginField.getText().isEmpty() && !passwordField.getText().isEmpty() && !nam
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JTextField loginField;
     private javax.swing.JTextField nameField;
     private javax.swing.JPasswordField passwordField;

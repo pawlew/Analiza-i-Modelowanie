@@ -10,6 +10,8 @@
  */
 package poker;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -145,7 +147,14 @@ public class LoginDialog extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
-            User user = new User(loginField.getText(), passwordField.getText());
+            User user = null;
+           
+                try {
+                    user = new User(loginField.getText(), passwordField.getText());
+                } catch (Exception ex) {
+                    Logger.getLogger(LoginDialog.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            
             if(user.loginUser()){
                 PokerApp.getApplication().loggedUser = user;
                 PokerApp.getApplication().pokerView.loggedPanel.setVisible(true);
