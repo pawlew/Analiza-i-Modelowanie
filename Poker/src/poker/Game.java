@@ -10,7 +10,7 @@ import java.util.ArrayList;
  *
  * @author siesiek
  */
-public class Game {
+public class Game implements Runnable {
 
     Player player;
     int playersCount;
@@ -23,6 +23,7 @@ public class Game {
     }
 
     public void play() {
+//        controller.addInfo("sadada");
         Table table = new Table();
         table.Players.add(player);
         for (int i = 1; i < playersCount; i++) {
@@ -31,6 +32,10 @@ public class Game {
         table.setGameStatus(true);
 
         while (table.isGameStatus()) {
+//            controller.clearInfo();
+            controller.addInfo("Początek");
+            controller.clearTableCards();
+            controller.clearHand();
             table.setPot(0);
             table.setPlayerActionsReq(playersCount - 1);
             table.setDealer(table.nextDealer());
@@ -52,10 +57,17 @@ public class Game {
             table.setCurrentBet(2);
             table.CommCards.clear();
             table.BurnCards.clear();
+            
+            controller.clearTableCards();
+            controller.clearHand();
 
             for (int i = 0; i < 2; i++) {
                 for (Player p : table.Players) {
+                    Card c = deck.dealCard();
                     p.giveCard(deck.dealCard());
+                    if (p.isHuman()) {
+                        controller.addHandCard(c);
+                    }
                 }
             }
 
@@ -97,6 +109,7 @@ public class Game {
                                         p.setActionReq(false);
                                         table.decActionsReq();
 //                                        komunikat
+                                        controller.addInfo("Gracz: " + p.getPlayerName() + " sprawdza");
                                         break;
                                     case 1:
 //                                        podbijam
@@ -109,6 +122,7 @@ public class Game {
                                         p.setActionReq(false);
                                         table.setPlayerActionsReq(playersCount - 1);
 //                                        komunikat
+                                        controller.addInfo("Gracz: " + p.getPlayerName() + " podbija stawkę");
                                         break;
                                     case 2:
                                         table.addToPot(choiceAI[1]);
@@ -120,12 +134,14 @@ public class Game {
                                         p.setActionReq(false);
                                         table.setPlayerActionsReq(playersCount - 1);
 //                                        komunikat
+                                        controller.addInfo("Gracz: " + p.getPlayerName() + " dokłada");
                                         break;
                                     case 3:
 //                                        czekam
                                         p.setActionReq(false);
                                         table.decActionsReq();
 //                                        komunikat
+                                        controller.addInfo("Gracz: " + p.getPlayerName() + " czeka");
                                         break;
                                     case 4:
 //                                        pas
@@ -133,6 +149,7 @@ public class Game {
                                         p.actionFold();
                                         table.decActionsReq();
 //                                        komunikat
+                                        controller.addInfo("Gracz: " + p.getPlayerName() + " pasuje");
                                         break;
                                     case 5:
 //                                        opuszcza stol 
@@ -140,10 +157,18 @@ public class Game {
                                         p.actionFold();
                                         table.decActionsReq();
                                         p.setOut(true);
+                                        controller.addInfo("Gracz: " + p.getPlayerName() + " opuszcza stol");
                                         break;
                                 }
                             } else if (p.isHuman() && p.isActionReq() && !p.isAllIn()) {
-                                int choice[] = controller.getAction(table, p.getPlayerNum());
+//                                controller.addInfo("Twoja kolej");
+//                                controller.resetAction();
+                                controller.updateState(table);
+                                int choice[] = controller.getAction(table);
+                                while(choice[0] < 0){
+                                    choice = controller.getAction(table);
+                                }
+                                
                                 switch (choice[0]) {
                                     case 0:
                                         table.addToPot(choice[1]);
@@ -152,6 +177,15 @@ public class Game {
                                         table.decActionsReq();
                                         break;
                                     case 2:
+                                        table.addToPot(choice[1]);
+                                        p.takeFromChips(choice[1]);
+                                        for (Player p2 : table.Players) {
+                                            if (!p2.isOut()) {
+                                                p2.setActionReq(true);
+                                            }
+                                        }
+                                        p.setActionReq(false);
+                                        table.setPlayerActionsReq(playersCount - 1);
                                     case 1:
                                         table.addToPot(choice[1]);
                                         p.takeFromChips(choice[1]);
@@ -175,6 +209,7 @@ public class Game {
                                         p.actionFold();
                                         table.decActionsReq();
                                         p.setOut(true);
+                                        table.setGameStatus(false);
                                         break;
                                 }
                             } else {
@@ -195,26 +230,33 @@ public class Game {
                     }
                 }
 
-                switch (table.getRound()) {
-                    case 0:
-//                        komunikat PRE-FLOP
-                        break;
-                    case 1:
-//                        komunikat FLOP
-                        break;
-                    case 2:
-//                        komunikat TURN
-                        break;
-                    case 3:
-//                        komuniakt RIVER
-                        handLoop = false;
-                        break;
-                    case 4:
-//                        komunikat SHOWDOWN
-                        break;
-                }
+//                switch (table.getRound()) {
+//                    case 0:
+////                        komunikat PRE-FLOP
+//                        controller.addInfo("Przed flopem");
+//                        break;
+//                    case 1:
+////                        komunikat FLOP
+//                        controller.addInfo("Flop");
+//                        break;
+//                    case 2:
+////                        komunikat TURN
+//                        controller.addInfo("Turn");
+//                        break;
+//                    case 3:
+////                        komuniakt RIVER
+//                        controller.addInfo("River");
+//                        handLoop = false;
+//                        break;
+//                    case 4:
+////                        komunikat SHOWDOWN
+//                        controller.addInfo("Wyłożenie kart");
+//                        break;
+//                }
 
 //                komunikat o koncu rundy
+//                controller.addInfo("Koniec rundy!!!");
+
                 int foldCount = 0;
                 int playerNotFolded = -1;
 
@@ -229,6 +271,7 @@ public class Game {
 
                 if (foldCount == 0) {
 //                    komunikat, ze wszyscy gracze spasowali, gra od nowa
+                    controller.addInfo("Wszyscy gracze spasowali!!!");
                     for (Player p : table.Players) {
                         if (!p.isOut() && p.getChips() > 0) {
                             p.setFolded(false);
@@ -266,6 +309,7 @@ public class Game {
                                             winningPlayers.add(p);
                                         } else if (highCard == p.getHighCard()) {
 //                                            komunikat ze remis
+                                            controller.addInfo("Remis");
                                             winningPlayers.add(p);
                                         }
                                     }
@@ -274,9 +318,55 @@ public class Game {
                         }
 
 //                        komunikaty o zwyciezcy
+//                        for (Player p : winningPlayers) {
+//                            controller.addInfo("Gracz "+p.getPlayerName()+" wygral majac karty: "+p.hand.get(0)+" "+p.hand.get(1));
+//                        }
+
+
+//                        System.out.print("\nCommunity Cards: ");
+//                        for (Card c : table.CommCards) {
+//                            System.out.print(c + " ");
+//                        }
+
+                        for (Player p : winningPlayers) {
+                            controller.addInfo("Gracz " + p.getPlayerName() + " wygral poprzez: ");
+                            switch (p.getHandRank()) {
+                                case 0:
+                                    controller.addInfo("wysoką kartę");
+                                    break;
+                                case 1:
+                                    controller.addInfo("parę");
+                                    break;
+                                case 2:
+                                    controller.addInfo("dwie pary");
+                                    break;
+                                case 3:
+                                    controller.addInfo("trójkę");
+                                    break;
+                                case 4:
+                                    controller.addInfo("strita");
+                                    break;
+                                case 5:
+                                    controller.addInfo("kolor");
+                                    break;
+                                case 6:
+                                    controller.addInfo("fula");
+                                    break;
+                                case 7:
+                                    controller.addInfo("karetę");
+                                    break;
+                                case 8:
+                                    controller.addInfo("poker");
+                                    break;
+                                case 9:
+                                    controller.addInfo("poker królewski");
+                                    break;
+                            }
+                        }
 
                         int portion = table.getPot() / winningPlayers.size();
 //                        komunikat o przydzieleniu nagrody
+                        controller.addInfo("Zwyciezca otrzymuje: " + portion);
                         for (Player p : winningPlayers) {
                             table.Players.get(p.getPlayerNum()).addToChips(portion);
                         }
@@ -293,10 +383,13 @@ public class Game {
                         }
 
                         table.setRound(0);
+                        controller.clearHand();
                         handLoop = false;
                     } else if (foldCount == 1) {
                         Player playerWinner = table.Players.get(playerNotFolded);
 //                        komunikat o wygranym
+                        controller.addInfo("Gracz " + playerWinner.getPlayerName() + " wygrał z ręki");
+                        controller.addInfo("Zwyciezca otrzymuje: " + table.getPot());
                         table.Players.get(playerNotFolded).addToChips(table.getPot());
                         table.setPot(0);
                         for (Player p : table.Players) {
@@ -308,77 +401,93 @@ public class Game {
                             }
                         }
                         table.setRound(0);
+                        controller.clearHand();
                         handLoop = false;
-                    } else {
-                        switch (table.getRound()) {
-                            case 0:
-//                                System.out.println("\n*** THE FLOP IS DEALT ***");
-                                break;
-                            case 1:
-//                                System.out.println("\n*** THE TURN IS DEALT ***");
-                                break;
-                            case 2:
-//                                System.out.println("\n*** THE RIVER IS DEALT ***");
-                                break;
-                            case 3:
-//                                System.out.println("\n***");
-                                break;
-                            case 4:
-//                                System.out.println("\n***");
-                                break;
-                        }
+                    }
+                    else {
+//                        switch (table.getRound()) {
+//                            case 0:
+//                                controller.addInfo("Rozdawany flop");
+//                                break;
+//                            case 1:
+//                                controller.addInfo("Rozdawany turn");
+//                                break;
+//                            case 2:
+//                                controller.addInfo("Rozdawany river");
+//                                break;
+//                            case 3:
+//                                break;
+//                            case 4:
+//                                break;
+//                        }
                         table.setRound(table.getRound() + 1);
-//                        System.out.println("\nTABLE STATUS:");
 
                         // Pot
-//                        System.out.println("\tPot: $" + table.getPot());
+                        controller.setPot(table.getPot());
 
                         // Community Cards
 //                        System.out.print("\tCommunity Cards: ");
-                        switch (table.getRound()) {
-                            case 0:
-//                                System.out.println("None");
-                                break;
-                            case 1:
-//                                System.out.println(table.CommCards.get(0) + "  " + table.CommCards.get(1)
-//                                        + "  " + table.CommCards.get(2));
-                                break;
-                            case 2:
-//                                System.out.println(table.CommCards.get(0) + "  " + table.CommCards.get(1)
-//                                        + "  " + table.CommCards.get(2) + "  " + table.CommCards.get(3));
-                                break;
-                            case 3:
-                                for (Card c : table.CommCards) {
-//                                    System.out.print(c + "  ");
-                                }
-                                break;
-                            case 4:
-                                for (Card c : table.CommCards) {
-//                                    System.out.print(c + "  ");
-                                }
-                                break;
-                        }
+//                        switch (table.getRound()) {
+//                            case 0:
+//                                controller.clearTableCards();
+////                                System.out.println("None");
+//                                break;
+//                            case 1:
+//                                controller.clearTableCards();
+//                                controller.addTableCard(table.CommCards.get(0));
+//                                controller.addTableCard(table.CommCards.get(1));
+//                                controller.addTableCard(table.CommCards.get(2));
+////                                System.out.println(table.CommCards.get(0) + "  " + table.CommCards.get(1)
+////                                        + "  " + table.CommCards.get(2));
+//                                break;
+//                            case 2:
+//                                controller.clearTableCards();
+//                                controller.addTableCard(table.CommCards.get(0));
+//                                controller.addTableCard(table.CommCards.get(1));
+//                                controller.addTableCard(table.CommCards.get(2));
+//                                controller.addTableCard(table.CommCards.get(3));
+//
+////                                System.out.println(table.CommCards.get(0) + "  " + table.CommCards.get(1)
+////                                        + "  " + table.CommCards.get(2) + "  " + table.CommCards.get(3));
+//                                break;
+//                            case 3:
+//                                controller.clearTableCards();
+//                                for (Card c : table.CommCards) {
+//                                    controller.addTableCard(c);
+//                                }
+//                                break;
+//                            case 4:
+//                                controller.clearTableCards();
+//                                for (Card c : table.CommCards) {
+//                                    controller.addTableCard(c);
+//                                }
+//                                break;
+//                        }
 //                        System.out.println("\nCURRENT PLAYERS: ");
 
                         // Players
-                        for (Player p : table.Players) {
-                            if (p.isOut() == false) {
+//                        for (Player p : table.Players) {
+//                            if (p.isOut() == false) {
 //                                System.out.print("\tPlayer " + (p.getPlayerNum() + 1) + ": " + p.getPlayerName());
-
-                                if (p.getPlayerNum() == table.getDealer()) {
+//
+//                                if (p.getPlayerNum() == table.getDealer()) {
 //                                    System.out.print(" (Dealer)");
-                                }
-                                if (p.isFolded() == true) {
+//                                }
+//                                if (p.isFolded() == true) {
 //                                    System.out.print(" (Folded)");
-                                }
-
+//                                }
+//
 //                                System.out.print("\n\tChips: $" + p.getChips());
 //                                System.out.println("\n");
-                            }
-                        }
+//                            }
+//                        }
                     }
                 }
             }
         }
+    }
+
+    public void run() {
+        this.play();
     }
 }
