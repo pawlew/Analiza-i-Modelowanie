@@ -1,7 +1,6 @@
 /*
  * PokerView.java
  */
-
 package poker;
 
 import org.jdesktop.application.Action;
@@ -15,6 +14,7 @@ import javax.swing.Timer;
 import javax.swing.Icon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  * The application's main frame.
@@ -30,6 +30,7 @@ public class PokerView extends FrameView {
         ResourceMap resourceMap = getResourceMap();
         int messageTimeout = resourceMap.getInteger("StatusBar.messageTimeout");
         messageTimer = new Timer(messageTimeout, new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
                 statusMessageLabel.setText("");
             }
@@ -40,6 +41,7 @@ public class PokerView extends FrameView {
             busyIcons[i] = resourceMap.getIcon("StatusBar.busyIcons[" + i + "]");
         }
         busyIconTimer = new Timer(busyAnimationRate, new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
                 busyIconIndex = (busyIconIndex + 1) % busyIcons.length;
                 statusAnimationLabel.setIcon(busyIcons[busyIconIndex]);
@@ -52,6 +54,7 @@ public class PokerView extends FrameView {
         // connecting action tasks to status bar via TaskMonitor
         TaskMonitor taskMonitor = new TaskMonitor(getApplication().getContext());
         taskMonitor.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 String propertyName = evt.getPropertyName();
                 if ("started".equals(propertyName)) {
@@ -68,11 +71,11 @@ public class PokerView extends FrameView {
                     progressBar.setVisible(false);
                     progressBar.setValue(0);
                 } else if ("message".equals(propertyName)) {
-                    String text = (String)(evt.getNewValue());
+                    String text = (String) (evt.getNewValue());
                     statusMessageLabel.setText((text == null) ? "" : text);
                     messageTimer.restart();
                 } else if ("progress".equals(propertyName)) {
-                    int value = (Integer)(evt.getNewValue());
+                    int value = (Integer) (evt.getNewValue());
                     progressBar.setVisible(true);
                     progressBar.setIndeterminate(false);
                     progressBar.setValue(value);
@@ -203,9 +206,19 @@ public class PokerView extends FrameView {
 
         jButton6.setText(resourceMap.getString("jButton6.text")); // NOI18N
         jButton6.setName("jButton6"); // NOI18N
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         jButton7.setText(resourceMap.getString("jButton7.text")); // NOI18N
         jButton7.setName("jButton7"); // NOI18N
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
 
         userLabel.setText(resourceMap.getString("userLabel.text")); // NOI18N
         userLabel.setName("userLabel"); // NOI18N
@@ -336,7 +349,7 @@ public class PokerView extends FrameView {
     }//GEN-LAST:event_loggedPanelComponentShown
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        if(loginDialog == null){
+        if (loginDialog == null) {
             loginDialog = new LoginDialog(PokerApp.getApplication().getMainFrame(), true);
         }
         loginDialog.setLocationRelativeTo(PokerApp.getApplication().getMainFrame());
@@ -350,33 +363,58 @@ public class PokerView extends FrameView {
     }//GEN-LAST:event_jButton4ActionPerformed
 
 private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-if(registerDialog == null){
-            registerDialog = new RegisterDialog(PokerApp.getApplication().getMainFrame(), true);
-        }
-        registerDialog.setLocationRelativeTo(PokerApp.getApplication().getMainFrame());
-        registerDialog.setVisible(true);
+    if (registerDialog == null) {
+        registerDialog = new RegisterDialog(PokerApp.getApplication().getMainFrame(), true);
+    }
+    registerDialog.setLocationRelativeTo(PokerApp.getApplication().getMainFrame());
+    registerDialog.setVisible(true);
 }//GEN-LAST:event_jButton8ActionPerformed
 
 private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-if(passChangeDialog == null){
-            passChangeDialog = new PassChangeDialog(PokerApp.getApplication().getMainFrame(), true);
-        }
-        passChangeDialog.setLocationRelativeTo(PokerApp.getApplication().getMainFrame());
-        passChangeDialog.setVisible(true);// TODO add your handling code here:                        
+    if (passChangeDialog == null) {
+        passChangeDialog = new PassChangeDialog(PokerApp.getApplication().getMainFrame(), true);
+    }
+    passChangeDialog.setLocationRelativeTo(PokerApp.getApplication().getMainFrame());
+    passChangeDialog.setVisible(true);// TODO add your handling code here:                        
 }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        GameDialog dialog = new GameDialog(PokerApp.getApplication().getMainFrame(), true);
-//        PlayController controller = new PlayController(dialog);
-//        dialog.setController(controller);
-//        Game newGame = new Game(new Player(0, "Gość", true), 10, controller);
-//        
-//        Thread gameThread = new Thread(newGame);
-//        gameThread.start();
-        
+        String players = JOptionPane.showInputDialog(PokerApp.getApplication().getMainFrame(), "Podaj liczbę graczy.");
+        while (players == null || Integer.valueOf(players) > 10 || Integer.valueOf(players) < 2) {
+            if (Integer.valueOf(players) > 10) {
+                JOptionPane.showMessageDialog(PokerApp.getApplication().getMainFrame(), "Maksymalna ilość graczy to 10 osób!");
+            }
+            if (Integer.valueOf(players) < 2) {
+                JOptionPane.showMessageDialog(PokerApp.getApplication().getMainFrame(), "Minimalna ilość graczy to 2 osoby!");
+            }
+            players = JOptionPane.showInputDialog(PokerApp.getApplication().getMainFrame(), "Podaj liczbę graczy.");
+        }
+        GameDialog dialog = new GameDialog(PokerApp.getApplication().getMainFrame(), true, Integer.valueOf(players),"Gość");
         dialog.setLocationRelativeTo(PokerApp.getApplication().getMainFrame());
         dialog.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        String players = JOptionPane.showInputDialog(PokerApp.getApplication().getMainFrame(), "Podaj liczbę graczy.");
+        while (players == null || Integer.valueOf(players) > 10 || Integer.valueOf(players) < 2) {
+            if (Integer.valueOf(players) > 10) {
+                JOptionPane.showMessageDialog(PokerApp.getApplication().getMainFrame(), "Maksymalna ilość graczy to 10 osób!");
+            }
+            if (Integer.valueOf(players) < 2) {
+                JOptionPane.showMessageDialog(PokerApp.getApplication().getMainFrame(), "Minimalna ilość graczy to 2 osoby!");
+            }
+            players = JOptionPane.showInputDialog(PokerApp.getApplication().getMainFrame(), "Podaj liczbę graczy.");
+        }
+        GameDialog dialog = new GameDialog(PokerApp.getApplication().getMainFrame(), true, Integer.valueOf(players), PokerApp.getApplication().loggedUser.getName());
+        dialog.setLocationRelativeTo(PokerApp.getApplication().getMainFrame());
+        dialog.setVisible(true);
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        StatsDialog dialog = new StatsDialog(PokerApp.getApplication().getMainFrame(), true);
+        dialog.setLocationRelativeTo(PokerApp.getApplication().getMainFrame());
+        dialog.setVisible(true);
+    }//GEN-LAST:event_jButton7ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -396,13 +434,11 @@ if(passChangeDialog == null){
     private javax.swing.JPanel statusPanel;
     private javax.swing.JLabel userLabel;
     // End of variables declaration//GEN-END:variables
-
     private final Timer messageTimer;
     private final Timer busyIconTimer;
     private final Icon idleIcon;
     private final Icon[] busyIcons = new Icon[15];
     private int busyIconIndex = 0;
-
     private JDialog aboutBox;
     private LoginDialog loginDialog;
     private RegisterDialog registerDialog;

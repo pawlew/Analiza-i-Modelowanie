@@ -84,6 +84,7 @@ public class User {
         ResultSet result = stat.executeQuery("SELECT * FROM users WHERE login='"+this.login+"' AND deleted=0");
         if(result.next() && result.getString("password").equals(this.password)){
             this.name = result.getString("name");
+            this.id = result.getInt("id");
             return true;
         }
         else{

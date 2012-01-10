@@ -10,11 +10,13 @@ import java.util.ArrayList;
  *
  * @author siesiek
  */
-public class Game implements Runnable {
+public class Game {
 
-    Player player;
-    int playersCount;
-    PlayController controller;
+    private Player player;
+    private int playersCount;
+    private PlayController controller;
+    private int games = 0;
+    private int victory = 0;
 
     public Game(Player player, int playersCount, PlayController controller) {
         this.player = player;
@@ -22,23 +24,31 @@ public class Game implements Runnable {
         this.controller = controller;
     }
 
+    public int getGames() {
+        return games;
+    }
+
+    public int getVictory() {
+        return victory;
+    }
+    
     public void play() {
-//        controller.addInfo("sadada");
         Table table = new Table();
         table.Players.add(player);
         for (int i = 1; i < playersCount; i++) {
-            table.Players.add(new Player(i, "Gracz komputerowy " + i, false));
+            table.Players.add(new Player(i, "Komp " + i, false));
         }
         table.setGameStatus(true);
 
         while (table.isGameStatus()) {
-//            controller.clearInfo();
-            controller.addInfo("Początek");
+            games++;
+            controller.addInfo("Nowe rozdanie");
             controller.clearTableCards();
             controller.clearHand();
             table.setPot(0);
             table.setPlayerActionsReq(playersCount - 1);
             table.setDealer(table.nextDealer());
+            controller.addInfo("Rozdaje gracz "+table.Players.get(table.getDealer()).getPlayerName());
             for (Player p : table.Players) {
                 if (!p.isOut()) {
                     p.setActionReq(true);
@@ -51,13 +61,17 @@ public class Game implements Runnable {
             deck.shuffle();
             table.addToPot(table.Players.get(table.getSmall()).smallBlind());
             table.addToPot(table.Players.get(table.getBig()).bigBlind());
+            controller.addInfo("Gracz "+table.Players.get(table.getSmall()).getPlayerName() + " wyłożył małą ciemną");
+            controller.addInfo("Mała ciemna: "+table.Players.get(table.getSmall()).smallBlind()+" żeton");
+            controller.addInfo("Gracz "+table.Players.get(table.getBig()).getPlayerName() + " wyłożył dużą ciemną");
+            controller.addInfo("Duża ciemna: "+table.Players.get(table.getBig()).bigBlind()+" żetony");
             table.Players.get(table.getSmall()).setLastBetAmt(1);
             table.Players.get(table.getBig()).setLastBetAmt(2);
             table.Players.get(table.getBig()).setActionReq(false);
             table.setCurrentBet(2);
             table.CommCards.clear();
             table.BurnCards.clear();
-            
+
             controller.clearTableCards();
             controller.clearHand();
 
@@ -161,14 +175,12 @@ public class Game implements Runnable {
                                         break;
                                 }
                             } else if (p.isHuman() && p.isActionReq() && !p.isAllIn()) {
-//                                controller.addInfo("Twoja kolej");
-//                                controller.resetAction();
                                 controller.updateState(table);
                                 int choice[] = controller.getAction(table);
-                                while(choice[0] < 0){
+                                while (choice[0] < 0) {
                                     choice = controller.getAction(table);
                                 }
-                                
+
                                 switch (choice[0]) {
                                     case 0:
                                         table.addToPot(choice[1]);
@@ -212,6 +224,7 @@ public class Game implements Runnable {
                                         table.setGameStatus(false);
                                         break;
                                 }
+                                controller.setChips(p.getChips());
                             } else {
                                 table.decActionsReq();
                             }
@@ -229,33 +242,6 @@ public class Game implements Runnable {
                         p.setActionReq(true);
                     }
                 }
-
-//                switch (table.getRound()) {
-//                    case 0:
-////                        komunikat PRE-FLOP
-//                        controller.addInfo("Przed flopem");
-//                        break;
-//                    case 1:
-////                        komunikat FLOP
-//                        controller.addInfo("Flop");
-//                        break;
-//                    case 2:
-////                        komunikat TURN
-//                        controller.addInfo("Turn");
-//                        break;
-//                    case 3:
-////                        komuniakt RIVER
-//                        controller.addInfo("River");
-//                        handLoop = false;
-//                        break;
-//                    case 4:
-////                        komunikat SHOWDOWN
-//                        controller.addInfo("Wyłożenie kart");
-//                        break;
-//                }
-
-//                komunikat o koncu rundy
-//                controller.addInfo("Koniec rundy!!!");
 
                 int foldCount = 0;
                 int playerNotFolded = -1;
@@ -301,32 +287,30 @@ public class Game implements Runnable {
                                         highCard = p.getHighCard();
                                         winningPlayers.clear();
                                         winningPlayers.add(p);
+                                        if (p.isHuman()) {
+                                            victory++;
+                                        }
                                     } else if (winningRank == p.getHandRank()) {
                                         if (highCard < p.getHighCard()) {
                                             winningRank = p.getHandRank();
                                             highCard = p.getHighCard();
                                             winningPlayers.clear();
                                             winningPlayers.add(p);
+                                            if (p.isHuman()) {
+                                                victory++;
+                                            }
                                         } else if (highCard == p.getHighCard()) {
 //                                            komunikat ze remis
                                             controller.addInfo("Remis");
                                             winningPlayers.add(p);
+                                            if (p.isHuman()) {
+                                                victory++;
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
-
-//                        komunikaty o zwyciezcy
-//                        for (Player p : winningPlayers) {
-//                            controller.addInfo("Gracz "+p.getPlayerName()+" wygral majac karty: "+p.hand.get(0)+" "+p.hand.get(1));
-//                        }
-
-
-//                        System.out.print("\nCommunity Cards: ");
-//                        for (Card c : table.CommCards) {
-//                            System.out.print(c + " ");
-//                        }
 
                         for (Player p : winningPlayers) {
                             controller.addInfo("Gracz " + p.getPlayerName() + " wygral poprzez: ");
@@ -366,7 +350,7 @@ public class Game implements Runnable {
 
                         int portion = table.getPot() / winningPlayers.size();
 //                        komunikat o przydzieleniu nagrody
-                        controller.addInfo("Zwyciezca otrzymuje: " + portion);
+                        controller.addInfo("Zwyciezca otrzymuje: " + portion + " żetonów");
                         for (Player p : winningPlayers) {
                             table.Players.get(p.getPlayerNum()).addToChips(portion);
                         }
@@ -389,7 +373,10 @@ public class Game implements Runnable {
                         Player playerWinner = table.Players.get(playerNotFolded);
 //                        komunikat o wygranym
                         controller.addInfo("Gracz " + playerWinner.getPlayerName() + " wygrał z ręki");
-                        controller.addInfo("Zwyciezca otrzymuje: " + table.getPot());
+                        controller.addInfo("Zwyciezca otrzymuje: " + table.getPot() + " żetonów");
+                        if(playerWinner.isHuman()){
+                            victory++;
+                        }
                         table.Players.get(playerNotFolded).addToChips(table.getPot());
                         table.setPot(0);
                         for (Player p : table.Players) {
@@ -403,91 +390,17 @@ public class Game implements Runnable {
                         table.setRound(0);
                         controller.clearHand();
                         handLoop = false;
-                    }
-                    else {
-//                        switch (table.getRound()) {
-//                            case 0:
-//                                controller.addInfo("Rozdawany flop");
-//                                break;
-//                            case 1:
-//                                controller.addInfo("Rozdawany turn");
-//                                break;
-//                            case 2:
-//                                controller.addInfo("Rozdawany river");
-//                                break;
-//                            case 3:
-//                                break;
-//                            case 4:
-//                                break;
-//                        }
+                    } else {
                         table.setRound(table.getRound() + 1);
 
                         // Pot
                         controller.setPot(table.getPot());
-
-                        // Community Cards
-//                        System.out.print("\tCommunity Cards: ");
-//                        switch (table.getRound()) {
-//                            case 0:
-//                                controller.clearTableCards();
-////                                System.out.println("None");
-//                                break;
-//                            case 1:
-//                                controller.clearTableCards();
-//                                controller.addTableCard(table.CommCards.get(0));
-//                                controller.addTableCard(table.CommCards.get(1));
-//                                controller.addTableCard(table.CommCards.get(2));
-////                                System.out.println(table.CommCards.get(0) + "  " + table.CommCards.get(1)
-////                                        + "  " + table.CommCards.get(2));
-//                                break;
-//                            case 2:
-//                                controller.clearTableCards();
-//                                controller.addTableCard(table.CommCards.get(0));
-//                                controller.addTableCard(table.CommCards.get(1));
-//                                controller.addTableCard(table.CommCards.get(2));
-//                                controller.addTableCard(table.CommCards.get(3));
-//
-////                                System.out.println(table.CommCards.get(0) + "  " + table.CommCards.get(1)
-////                                        + "  " + table.CommCards.get(2) + "  " + table.CommCards.get(3));
-//                                break;
-//                            case 3:
-//                                controller.clearTableCards();
-//                                for (Card c : table.CommCards) {
-//                                    controller.addTableCard(c);
-//                                }
-//                                break;
-//                            case 4:
-//                                controller.clearTableCards();
-//                                for (Card c : table.CommCards) {
-//                                    controller.addTableCard(c);
-//                                }
-//                                break;
-//                        }
-//                        System.out.println("\nCURRENT PLAYERS: ");
-
-                        // Players
-//                        for (Player p : table.Players) {
-//                            if (p.isOut() == false) {
-//                                System.out.print("\tPlayer " + (p.getPlayerNum() + 1) + ": " + p.getPlayerName());
-//
-//                                if (p.getPlayerNum() == table.getDealer()) {
-//                                    System.out.print(" (Dealer)");
-//                                }
-//                                if (p.isFolded() == true) {
-//                                    System.out.print(" (Folded)");
-//                                }
-//
-//                                System.out.print("\n\tChips: $" + p.getChips());
-//                                System.out.println("\n");
-//                            }
-//                        }
                     }
                 }
             }
+            if(table.Players.get(0).getChips() <= 0){
+                table.setGameStatus(false);
+            }
         }
-    }
-
-    public void run() {
-        this.play();
     }
 }

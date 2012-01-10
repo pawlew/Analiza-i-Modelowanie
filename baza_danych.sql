@@ -1,37 +1,22 @@
-SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
-SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
 
-CREATE SCHEMA IF NOT EXISTS `poker` DEFAULT CHARACTER SET utf8 COLLATE utf8_polish_ci ;
-USE `poker` ;
+CREATE TABLE IF NOT EXISTS `games` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `createDate` date NOT NULL,
+  `rounds` int(11) NOT NULL DEFAULT '0',
+  `victory` int(11) NOT NULL,
+  `deleted` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=6 ;
 
--- -----------------------------------------------------
--- Table `poker`.`users`
--- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `poker`.`users` (
-  `id` INT NOT NULL AUTO_INCREMENT ,
-  `name` VARCHAR(45) NOT NULL ,
-  `login` VARCHAR(45) NOT NULL ,
-  `password` VARCHAR(255) NOT NULL ,
-  `deleted` INT NOT NULL DEFAULT 0 ,
-  PRIMARY KEY (`id`) )
-ENGINE = MyISAM;
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) COLLATE utf8_polish_ci NOT NULL,
+  `login` varchar(45) COLLATE utf8_polish_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8_polish_ci NOT NULL,
+  `deleted` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=3 ;
 
-
--- -----------------------------------------------------
--- Table `poker`.`games`
--- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `poker`.`games` (
-  `id` INT NOT NULL AUTO_INCREMENT ,
-  `userId` INT NOT NULL ,
-  `createDate` DATE NOT NULL ,
-  `scores` DOUBLE NOT NULL DEFAULT 0 ,
-  `deleted` INT NOT NULL ,
-  PRIMARY KEY (`id`) )
-ENGINE = InnoDB;
-
-
-
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

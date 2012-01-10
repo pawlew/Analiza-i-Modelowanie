@@ -17,7 +17,7 @@ public class Player {
     private boolean actionReq = true;
     private boolean folded = false;
     public ArrayList<Card> hand = new ArrayList<Card>();
-    private int chips = 100;
+    private int chips = 1000;
     private boolean isHuman;
     private boolean isOut = false;
     private int handRank = 0;
